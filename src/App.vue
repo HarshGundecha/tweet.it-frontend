@@ -2,7 +2,8 @@
   <div class="wrapper" id="app">
     <Navbar/>
     <MainSidebar/>
-    <ContentWrapper/>
+    <!-- <ContentWrapper/> -->
+    <router-view/>
     <ControlSidebar/>
     <Footer/>
   </div>
@@ -10,19 +11,19 @@
 
 <script>
 // import '@/assets/dist/js/demo.js';
-import Navbar from './components/common/Navbar';
-import MainSidebar from './components/common/MainSidebar';
-import ContentWrapper from './components/common/ContentWrapper';
+import Navbar from './components/shared/Navbar';
+import MainSidebar from './components/shared/MainSidebar';
+// import ContentWrapper from './components/shared/ContentWrapper';
 // import Post from './components/Post.vue';
-import ControlSidebar from './components/common/ControlSidebar';
-import Footer from './components/common/Footer';
+import ControlSidebar from './components/shared/ControlSidebar';
+import Footer from './components/shared/Footer';
 
 export default {
   name: 'app',
   components: {
     Navbar,
     MainSidebar,
-    ContentWrapper,
+    // ContentWrapper,
     // Post,
     ControlSidebar,
     Footer,
