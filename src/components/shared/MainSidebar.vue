@@ -2,11 +2,11 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <router-link to="/" class="brand-link">
       <img src="@/assets/adminlte300-template/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
            style="opacity: .8">
       <span class="brand-text font-weight-light">AdminLTE 3</span>
-    </a>
+    </router-link>
 
     <!-- Sidebar -->
     <div class="sidebar">
@@ -373,16 +373,19 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="pages/examples/login.html" class="nav-link">
+                <router-link to="/login" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Login</p>
-                </a>
+                <!-- <a href="pages/examples/login.html" class="nav-link">
+
+                </a> -->
+                </router-link>
               </li>
               <li class="nav-item">
-                <a href="pages/examples/register.html" class="nav-link">
+                <router-link to="/register" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Register</p>
-                </a>
+                </router-link>
               </li>
               <li class="nav-item">
                 <a href="pages/examples/forgot-password.html" class="nav-link">
