@@ -25,9 +25,9 @@
 							<div class="card-body login-card-body">
 								<p class="login-box-msg">Sign in to start your session</p>
 
-								<form action="../../index3.html" method="post">
+								<form @submit.prevent="login">
 									<div class="input-group mb-3">
-										<input type="email" class="form-control" placeholder="Email">
+										<input v-model="username" type="text" class="form-control" placeholder="Email">
 										<div class="input-group-append">
 											<div class="input-group-text">
 												<span class="fas fa-envelope"></span>
@@ -35,7 +35,7 @@
 										</div>
 									</div>
 									<div class="input-group mb-3">
-										<input type="password" class="form-control" placeholder="Password">
+										<input v-model="password" type="password" class="form-control" placeholder="Password">
 										<div class="input-group-append">
 											<div class="input-group-text">
 												<span class="fas fa-lock"></span>
@@ -90,7 +90,22 @@
 
 <script>
 export default {
-	name : 'Login'
+	name : 'Login',
+	data(){
+		return {
+			username : "",
+			password : ""
+		}
+	},
+	methods: {
+		login: function (){
+			let username = this.username 
+			let password = this.password
+			this.$store.dispatch('login', { username, password })
+			.then(() => this.$router.push('/'))
+			.catch(err => console.log(err))
+		}
+  }
 }
 </script>
 

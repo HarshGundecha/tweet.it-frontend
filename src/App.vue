@@ -4,6 +4,7 @@
     <MainSidebar/>
     <!-- <ContentWrapper/> -->
     <router-view/>
+    <span v-if="isLoggedIn"> | <button class="btn btn-danger" @click="logout">Logout</button></span>
     <ControlSidebar/>
     <Footer/>
   </div>
@@ -27,6 +28,17 @@ export default {
     // Post,
     ControlSidebar,
     Footer,
-  }
+  },
+  computed : {
+    isLoggedIn : function(){ return this.$store.getters.isLoggedIn}
+  },
+  methods: {
+    logout: function () {
+      this.$store.dispatch('logout')
+      .then(() => {
+        this.$router.push('/login')
+      })
+    }
+  },
 }
 </script>
