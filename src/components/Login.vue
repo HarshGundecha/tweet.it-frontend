@@ -27,7 +27,7 @@
 
 								<form @submit.prevent="login">
 									<div class="input-group mb-3">
-										<input v-model="username" type="text" class="form-control" placeholder="Email">
+										<input v-model="email" type="text" class="form-control" placeholder="Email">
 										<div class="input-group-append">
 											<div class="input-group-text">
 												<span class="fas fa-envelope"></span>
@@ -93,15 +93,15 @@ export default {
 	name : 'Login',
 	data(){
 		return {
-			username : "",
+			email : "",
 			password : ""
 		}
 	},
 	methods: {
 		login: function (){
-			let username = this.username 
+			let email = this.email 
 			let password = this.password
-			this.$store.dispatch('login', { username, password })
+			this.$store.dispatch('login', { email, password })
 			.then(() => this.$router.push('/'))
 			.catch(err => console.log(err))
 		}
