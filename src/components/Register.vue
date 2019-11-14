@@ -24,9 +24,9 @@
 							<div class="card-body register-card-body">
 								<p class="login-box-msg">Register a new membership</p>
 
-								<form action="../../index.html" method="post">
+								<form @submit.prevent="register">
 									<div class="input-group mb-3">
-										<input type="text" class="form-control" placeholder="Full name">
+										<input v-model="username" type="text" class="form-control" placeholder="Username">
 										<div class="input-group-append">
 											<div class="input-group-text">
 												<span class="fas fa-user"></span>
@@ -34,7 +34,15 @@
 										</div>
 									</div>
 									<div class="input-group mb-3">
-										<input type="email" class="form-control" placeholder="Email">
+										<input v-model="name" type="text" class="form-control" placeholder="Name">
+										<div class="input-group-append">
+											<div class="input-group-text">
+												<span class="fas fa-user"></span>
+											</div>
+										</div>
+									</div>
+									<div class="input-group mb-3">
+										<input v-model="email" type="email" class="form-control" placeholder="Email">
 										<div class="input-group-append">
 											<div class="input-group-text">
 												<span class="fas fa-envelope"></span>
@@ -42,15 +50,7 @@
 										</div>
 									</div>
 									<div class="input-group mb-3">
-										<input type="password" class="form-control" placeholder="Password">
-										<div class="input-group-append">
-											<div class="input-group-text">
-												<span class="fas fa-lock"></span>
-											</div>
-										</div>
-									</div>
-									<div class="input-group mb-3">
-										<input type="password" class="form-control" placeholder="Retype password">
+										<input v-model="password" type="password" class="form-control" placeholder="Password">
 										<div class="input-group-append">
 											<div class="input-group-text">
 												<span class="fas fa-lock"></span>
@@ -99,7 +99,28 @@
 
 <script>
 export default {
-	name : 'Register'
+	name : 'Register',
+	data(){
+		return {
+			name : "",
+			username : "",
+			email : "",
+			password : "",
+		}
+	},
+	methods: {
+		register: function () {
+			let data = {
+				name: this.name,
+				username: this.username,
+				email: this.email,
+				password: this.password,
+			}
+			this.$store.dispatch('register', data)
+			.then(() => this.$router.push('/'))
+			.catch(err => console.log(err))
+		}
+	}
 }
 </script>
 
