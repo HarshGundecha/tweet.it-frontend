@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Login from './components/Login';
 import Register from './components/Register';
+import Users from './components/Users';
 import ContentWrapper from './components/shared/ContentWrapper';
 import Profile from './components/Profile';
 import Router from 'vue-router'
@@ -32,6 +33,13 @@ let router = new Router({
     { 
       path: '/profile', 
       component: Profile, 
+      meta: { 
+        requiresAuth: true
+      }
+		},
+    { 
+      path: '/users', 
+      component: Users, 
       meta: { 
         requiresAuth: true
       }

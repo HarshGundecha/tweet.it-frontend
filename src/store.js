@@ -102,7 +102,7 @@ export default new Vuex.Store({
 		},
 		post_comment({commit}, comment){
 			return new Promise((resolve, reject) => {
-				axios({url: 'https://tweeterbackend.herokuapp.com/comment', data: comment, method: 'POST' })
+				axios({url: 'https://tweeterbackend.herokuapp.com/comments', data: comment, method: 'POST' })
 				.then(resp => {
 					const tweet = resp.data.tweet
 					commit('set_my_tweets', tweet)
@@ -117,7 +117,7 @@ export default new Vuex.Store({
 		},
 		addTweet({commit}, newTweet){
 			return new Promise((resolve, reject) => {
-				axios({url: 'https://tweeterbackend.herokuapp.com/tweet', data: newTweet, method: 'POST' })
+				axios({url: 'https://tweeterbackend.herokuapp.com/tweets', data: newTweet, method: 'POST' })
 				.then(resp => {
 					const tweet = resp.data.tweet
 					commit('set_my_tweets', tweet)
