@@ -38,7 +38,7 @@ export default new Vuex.Store({
 		login({commit}, user){
 			return new Promise((resolve, reject) => {
 				commit('auth_request')
-				axios({url: 'http://localhost:8888/login', data: user, method: 'POST' })
+				axios({url: 'https://tweeterbackend.herokuapp.com/login', data: user, method: 'POST' })
 				.then(resp => {
 					const token = resp.data.token
 					const user = resp.data.user
@@ -57,7 +57,7 @@ export default new Vuex.Store({
 		register({commit}, user){
 			return new Promise((resolve, reject) => {
 				commit('auth_request')
-				axios({url: 'http://localhost:8888/register', data: user, method: 'POST' })
+				axios({url: 'https://tweeterbackend.herokuapp.com/register', data: user, method: 'POST' })
 				.then(resp => {
 					const token = resp.data.token
 					const user = resp.data.user
@@ -85,7 +85,7 @@ export default new Vuex.Store({
 		get_profile({commit}){
 			return new Promise((resolve, reject) => {
 				// commit('auth_request')
-				axios({url: 'http://localhost:8888/profile', method: 'GET'})
+				axios({url: 'https://tweeterbackend.herokuapp.com/profile', method: 'GET'})
 				.then(resp => {
 					const tweet = resp.data.tweet
 					const user = resp.data.user
@@ -102,7 +102,7 @@ export default new Vuex.Store({
 		},
 		post_comment({commit}, comment){
 			return new Promise((resolve, reject) => {
-				axios({url: 'http://localhost:8888/comment', data: comment, method: 'POST' })
+				axios({url: 'https://tweeterbackend.herokuapp.com/comment', data: comment, method: 'POST' })
 				.then(resp => {
 					const tweet = resp.data.tweet
 					commit('set_my_tweets', tweet)
@@ -117,7 +117,7 @@ export default new Vuex.Store({
 		},
 		addTweet({commit}, newTweet){
 			return new Promise((resolve, reject) => {
-				axios({url: 'http://localhost:8888/tweet', data: newTweet, method: 'POST' })
+				axios({url: 'https://tweeterbackend.herokuapp.com/tweet', data: newTweet, method: 'POST' })
 				.then(resp => {
 					const tweet = resp.data.tweet
 					commit('set_my_tweets', tweet)
