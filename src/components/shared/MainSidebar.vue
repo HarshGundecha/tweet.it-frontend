@@ -46,6 +46,13 @@
             </router-link>
           </li>
 
+          <li class="nav-item has-treeview menu-open">
+            <router-link to="/users" class="nav-link">
+              <i class="nav-icon fas fa-users"></i>
+              <p>Users</p>
+            </router-link>
+          </li>
+
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
