@@ -146,7 +146,9 @@
           <!-- Menu Footer-->
           <li class="user-footer">
             <a href="#" class="btn btn-default btn-flat">Profile</a>
-            <a href="#" class="btn btn-default btn-flat float-right">Sign out</a>
+            <!-- <span v-if="isLoggedIn"><button class="btn btn-default btn-flat float-right" @click="logout">Logout</button> -->
+            <span><button class="btn btn-default btn-flat float-right" @click="logout">Logout</button>
+            </span>
           </li>
         </ul>
       </li>
@@ -162,7 +164,15 @@
 
 <script>
 export default {
-	name:"Navbar"
+  name:"Navbar",
+  methods: {
+    logout: function () {
+      this.$store.dispatch('logout')
+      .then(() => {
+        this.$router.push('/login')
+      })
+    }
+  },
 }
 </script>
 

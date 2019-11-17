@@ -4,7 +4,6 @@
     <MainSidebar/>
     <!-- <ContentWrapper/> -->
     <router-view/>
-    <span v-if="isLoggedIn"> | <button class="btn btn-danger" @click="logout">Logout</button></span>
     <ControlSidebar/>
     <Footer/>
   </div>

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Login from './components/Login';
 import Register from './components/Register';
 import ContentWrapper from './components/shared/ContentWrapper';
+import Profile from './components/Profile';
 import Router from 'vue-router'
 import store from './store'
 
@@ -28,7 +29,14 @@ let router = new Router({
       component: Register, 
       // alias: '/alias' // When entering '/alias' the content of the component Users will render
 		},
-	]
+    { 
+      path: '/profile', 
+      component: Profile, 
+      meta: { 
+        requiresAuth: true
+      }
+		},
+  ]
 })
 
 router.beforeEach((to, from, next) => {

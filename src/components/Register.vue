@@ -58,35 +58,18 @@
 										</div>
 									</div>
 									<div class="row">
-										<div class="col-8">
-											<div class="icheck-primary">
-												<input type="checkbox" id="agreeTerms" name="terms" value="agree">
-												<label for="agreeTerms">
-												I agree to the <a href="#">terms</a>
-												</label>
-											</div>
+										<div class="col-6">
+											<router-link to="/login" class="btn btn-danger btn-block"> <i class="fa fa-sign-in-alt"></i> Login</router-link>
 										</div>
 										<!-- /.col -->
-										<div class="col-4">
-											<button type="submit" class="btn btn-primary btn-block">Register</button>
+										<div class="col-6">
+											<button type="submit" class="btn btn-success btn-block">Register</button>
 										</div>
 										<!-- /.col -->
 									</div>
 								</form>
 
-								<div class="social-auth-links text-center">
-									<p>- OR -</p>
-									<a href="#" class="btn btn-block btn-primary">
-										<i class="fab fa-facebook mr-2"></i>
-										Sign up using Facebook
-									</a>
-									<a href="#" class="btn btn-block btn-danger">
-										<i class="fab fa-google-plus mr-2"></i>
-										Sign up using Google+
-									</a>
-								</div>
 
-								<a href="login.html" class="text-center">I already have a membership</a>
 							</div>
 							<!-- /.form-box -->
 						</div><!-- /.card -->
@@ -117,8 +100,7 @@ export default {
 				password: this.password,
 			}
 			this.$store.dispatch('register', data)
-			.then(() => this.$router.push('/'))
-			.catch(err => console.log(err))
+			.then(() => this.$router.push('/profile'))
 		}
 	}
 }
