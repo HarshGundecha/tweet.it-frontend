@@ -14,8 +14,34 @@
             <i class="far fa-circle"></i></button>
           <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
           </button>
-          <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i>
+          <button v-if="user.username==tweet.user.username" type="button" class="btn btn-tool" data-toggle="modal" :data-target="'#modal-sm'+tweet.id"><i data-toggle="tooltip" title="delete tweet" class="fas fa-times"></i>
           </button>
+      <!-- <button type="button" class="btn btn-default" data-toggle="modal" :data-target="'#modal-sm'+tweet.id">
+        Launch Small Modal
+      </button> -->
+          <div v-if="user.username==tweet.user.username" class="modal fade" :id="'modal-sm'+tweet.id" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Delete Tweet</h4>
+                  <span v-if="user.username==otherUser.username">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">×</span>
+                    </button>                    
+                  </span>
+                </div>
+                <div class="modal-body">
+                  <p>Are you sure ypu want to delete this tweet ?</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                  <button v-on:click="deleteTweet" type="button" data-card-widget="remove" data-dismiss="modal" class="btn btn-primary">Yes</button>
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
         </div>
         <!-- /.card-tools -->
       </div>
@@ -23,27 +49,51 @@
       <div class="card-body">
         <Images v-bind:images="tweet.images"/>
         <p>{{tweet.tweetText}}</p>
-        <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i> Share</button>
-        <button type="button" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"></i> Like</button>
-        <span class="float-right text-muted">127 likes - {{tweet.comment.length}} comments</span>
+
+        <button data-toggle="collapse" :data-parent="'#accordion'+tweet.id" :href="'#collapse'+tweet.id"  aria-expanded="false" type="button" class="btn btn-default btn-sm"><i class="fas fa-comment"> {{tweet.comment.length}}</i></button>&nbsp;
+        <button v-on:click="toggleTweetLike" class="btn btn-default btn-sm"><i class="fa fa-thumbs-up"> {{tweet.likes.length}}</i></button>
+        <!-- {{tweet.likes.indexOf(this.user)}} -->
+        <!-- <span class="float-right text-muted">{{tweet.likes.length}} likes- {{tweet.comment.length}} comments</span> -->
       </div>
       <!-- /.card-body -->
-      <div class="card-footer card-comments">
-        <Comments v-bind:comments="tweet.comment"/>
+      <div :id="'accordion'+tweet.id">
+        <div :id="'collapse'+tweet.id" class="panel-collapse in collapse" style="">
+          <div class="card-footer card-comments">
+            <Comments v-bind:comments="tweet.comment"/>
+            <div class="card-footer">
+              <form @submit.prevent="addComment">
+                <img class="img-fluid img-circle img-sm" src="@/assets/adminlte300-template/dist/img/user4-128x128.jpg" alt="Alt Text">
+                <div class="img-push">
+                  <input type="text" v-model="commentText" class="form-control form-control-sm" placeholder="Press enter to post comment">
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
       <!-- /.card-footer -->
-      <div class="card-footer">
-        <form @submit.prevent="addComment">
-          <img class="img-fluid img-circle img-sm" src="@/assets/adminlte300-template/dist/img/user4-128x128.jpg" alt="Alt Text">
-          <!-- .img-push is used to add margin to elements next to floating images -->
-          <div class="img-push">
-            <input type="text"  v-model="commentText" class="form-control form-control-sm" placeholder="Press enter to post comment">
-          </div>
-        </form>
-      </div>
+
       <!-- /.card-footer -->
     </div>
     <!-- /.card -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   </div>
 </template>
 
@@ -65,19 +115,34 @@ export default {
   computed:{
     user(){
       return this.$store.getters.get_user;
-    }
-  },
+    },
+    otherUser(){
+      return this.$store.getters.getOtherUser;
+    },
+},
   methods: {
     addComment() {
       const newComment = {
         commentText: this.commentText,
-        user:this.user,
+        user:null,
         tweet:{
           id:this.$props.tweet.id
         }
       }
-      this.$store.dispatch('post_comment', newComment);
+      var data=[
+        newComment
+      ]
+      if(this.$route.path.startsWith('/feeds'))
+        data.push('getFeeds');
+      this.$store.dispatch('post_comment', data);
       this.commentText = '';
+    },
+    toggleTweetLike(){
+      // console.log(this.tweet.id);
+      this.$store.dispatch("toggleTweetLike", this.tweet.id);
+    },
+    deleteTweet(){
+      this.$store.dispatch("deleteTweet", this.tweet.id)
     }
   }
 }

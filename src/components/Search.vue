@@ -24,7 +24,7 @@
       <div class="card card-solid">
         <div class="card-body pb-0">
           <div class="row d-flex align-items-stretch">
-						<div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch" v-bind:key="user.id" v-for="user in users">
+						<div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch" v-bind:key="user.id" v-for="user in searchUsers">
 							<UserItem v-bind:user="user"/>
 						</div>
           </div>
@@ -56,17 +56,28 @@
 <script>
 import UserItem from './UserItem';
 export default {
-	name:"Users",
+	name:"Search",
 	components:{
 		UserItem
 	},
+	props:["searchText"],
 	computed:{
-		users(){
-			return this.$store.getters.getUsers
-		}
-	},
-	created() {
-    this.$store.dispatch('getUsers')
+		searchUsers(){
+			return this.$store.getters.getSearchUsers
+    },
+  },
+  watch: {
+    '$route.params.searchText': function (id) {
+      this.getSearchResult()
+    }
+  },
+  created: function () {
+    this.getSearchResult()
+  },
+  methods: {
+    getSearchResult() {
+      this.$store.dispatch('searchUser', this.searchText)
+    }
   }
 }
 </script>

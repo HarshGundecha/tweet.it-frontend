@@ -1,8 +1,6 @@
 <template>
 	<div>
-		<div v-bind:key="comment.id" v-for="comment in comments">
-			<CommentItem v-bind:comment="comment"/>
-		</div>		
+		<CommentItem v-bind:key="comment.id" v-for="comment in comments" v-bind:comment="comment"/>
 	</div>
 </template>
 

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Login from './components/Login';
 import Register from './components/Register';
 import Users from './components/Users';
+import Search from './components/Search';
 import ContentWrapper from './components/shared/ContentWrapper';
 import Profile from './components/Profile';
 import Router from 'vue-router'
@@ -16,6 +17,7 @@ let router = new Router({
     { 
       path: '/', 
       component: ContentWrapper, 
+      redirect:'/feeds',
       meta: { 
         requiresAuth: true
       }
@@ -30,13 +32,13 @@ let router = new Router({
       component: Register, 
       // alias: '/alias' // When entering '/alias' the content of the component Users will render
 		},
-    { 
-      path: '/profile', 
-      component: Profile, 
-      meta: { 
-        requiresAuth: true
-      }
-		},
+    // { 
+    //   path: '/profile', 
+    //   component: Profile, 
+    //   meta: { 
+    //     requiresAuth: true
+    //   }
+		// },
     { 
       path: '/users', 
       component: Users, 
@@ -44,6 +46,33 @@ let router = new Router({
         requiresAuth: true
       }
 		},
+    { 
+      path: '/search/:searchText?', 
+      component: Search, 
+      name:'search',
+      meta: { 
+        requiresAuth: true
+      },
+      props:true
+		},
+    { 
+      path: '/profile/:username', 
+      component: Profile, 
+      name:'profile',
+      meta: { 
+        requiresAuth: true
+      },
+      props:true
+		},
+    { 
+      path: '/feeds', 
+      component: Profile, 
+      name:'feeds',
+      meta: { 
+        requiresAuth: true
+      },
+		},
+
   ]
 })
 
@@ -55,7 +84,11 @@ router.beforeEach((to, from, next) => {
     }
     next('/login') 
   } else {
-    next() 
+    if (!store.getters.isLoggedIn) {
+      next()
+      return
+    }
+    next('/profile')  
   }
 });
 

@@ -100,7 +100,7 @@ export default {
 				password: this.password,
 			}
 			this.$store.dispatch('register', data)
-			.then(() => this.$router.push('/profile'))
+			.then(() => this.$router.push('/profile/'+data.username))
 		}
 	}
 }

@@ -6,18 +6,12 @@
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="../../index3.html" class="nav-link">Home</a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Contact</a>
-      </li>
     </ul>
 
     <!-- SEARCH FORM -->
-    <form class="form-inline ml-3">
+    <form @submit.prevent="searchUser" class="form-inline ml-3">
       <div class="input-group input-group-sm">
-        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+        <input v-on:keyup="searchUserIfOnSearchRoute" v-model="searchText" class="form-control form-control-navbar" type="search" placeholder="Search users" aria-label="Search">
         <div class="input-group-append">
           <button class="btn btn-navbar" type="submit">
             <i class="fas fa-search"></i>
@@ -116,7 +110,7 @@
       <li class="nav-item dropdown user-menu">
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
           <img src="@/assets/adminlte300-template/dist/img/user2-160x160.jpg" class="user-image img-circle elevation-2" alt="User Image">
-          <span class="d-none d-md-inline">Alexander Pierce</span>
+          <span class="d-none d-md-inline">{{user.name || ''}}</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <!-- User image -->
@@ -124,7 +118,7 @@
             <img src="@/assets/adminlte300-template/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
 
             <p>
-              Alexander Pierce - Web Developer
+              {{user.name || ''}}
               <small>Member since Nov. 2012</small>
             </p>
           </li>
@@ -152,11 +146,11 @@
           </li>
         </ul>
       </li>
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#">
           <i class="fas fa-th-large"></i>
         </a>
-      </li>
+      </li> -->
     </ul>
   </nav>
   <!-- /.navbar -->
@@ -165,14 +159,34 @@
 <script>
 export default {
   name:"Navbar",
+  data(){
+    return {
+      searchText:''
+    }
+  },
+  computed:{
+    user(){
+      return this.$store.getters.get_user
+    }
+  },
   methods: {
     logout: function () {
       this.$store.dispatch('logout')
       .then(() => {
         this.$router.push('/login')
       })
+    },
+    searchUser(){
+      this.$store.dispatch("setSearchText", this.searchText || ' ');
+      this.$router.push({name:'search', params:{searchText:this.searchText || ' '}})
+    },
+    searchUserIfOnSearchRoute(){
+      if(this.$route.path.startsWith('/search'))
+        this.searchUser()
     }
-  },
+
+},
+
 }
 </script>
 

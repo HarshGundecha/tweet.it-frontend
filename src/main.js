@@ -15,7 +15,6 @@ const token = localStorage.getItem('token')
 if (token) {
   Vue.prototype.$http.defaults.headers.common['Authorization'] = "Bearer "+token
 }
-console.log(token);
 
 Vue.filter('formatDate', function(value) {
   if (value){
