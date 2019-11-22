@@ -48,8 +48,6 @@
                 <span v-if="user.username!=otherUser.username">
                   <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
                 </span>
-                {{user.username}}<br>
-                {{otherUser.username}}
               </div>
               <!-- /.card-body -->
             </div>
@@ -300,17 +298,30 @@ export default {
       tweetText: '',
     }
   },
+  watch: {
+    '$route.path': function(){
+      // console.log(this.$route.params);
+      this.onCreated();
+    }
+  },
   methods:{
     addTweet(){
       const newTweet = {
         tweetText:this.tweetText,
         user:null,
+        comment:[]
       }
       this.tweetText=''
       this.$store.dispatch('addTweet', newTweet);
     },
     putUser(){
       this.$store.dispatch("putUser", this.user);
+    },
+    onCreated(){
+      if(this.$route.path.startsWith('/feeds'))
+        this.$store.dispatch('getFeeds')
+      else
+        this.$store.dispatch('getProfile', this.username)
     }
   },
   computed: {
@@ -325,10 +336,7 @@ export default {
     },
   },
   created() {
-    if(this.$route.path.startsWith('/feeds'))
-      this.$store.dispatch('getFeeds')
-    else
-      this.$store.dispatch('getProfile', this.username)
+    this.onCreated();
   },
 }
 </script>

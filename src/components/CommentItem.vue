@@ -10,7 +10,7 @@
 					{{comment.user.name}}
 					<span class="text-muted float-right">
 						{{comment.createdAt | formatDate}}
-						<button class="btn btn-primary btn-xs" v-on:click="toggleCommentLike" ><i class="fa fa-thumbs-up">&nbsp;{{comment.likes.length}}</i>
+						<button class="btn btn-primary btn-xs" v-on:click="toggleCommentLike" ><i class="fa fa-thumbs-up">&nbsp;{{comment.likes?comment.likes.length || 0 : 0 }}</i>
 						</button>&nbsp;
 						<button v-if="user.username==comment.user.username" class="btn btn-danger btn-xs" data-toggle="modal" :data-target="'#modal-sm-comment'+comment.id"><i class="fa fa-trash"></i></button>&nbsp;
 
@@ -49,7 +49,7 @@
 <script>
 export default {
 	name:"CommentItem",
-	props:["comment"],
+	props:["comment", "tweet"],
 	computed:{
 		user(){
 			return this.$store.getters.get_user
@@ -57,10 +57,10 @@ export default {
 	},
 	methods:{
 		toggleCommentLike(){
-      this.$store.dispatch("toggleCommentLike", this.comment.id);
+      this.$store.dispatch("toggleCommentLike", [this.tweet, this.comment]);
 		},
 		deleteComment(){
-      this.$store.dispatch("deleteComment", this.comment.id);
+      this.$store.dispatch("deleteComment", [this.tweet, this.comment]);
 		},
 },
 }

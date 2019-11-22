@@ -50,8 +50,8 @@
         <Images v-bind:images="tweet.images"/>
         <p>{{tweet.tweetText}}</p>
 
-        <button data-toggle="collapse" :data-parent="'#accordion'+tweet.id" :href="'#collapse'+tweet.id"  aria-expanded="false" type="button" class="btn btn-default btn-sm"><i class="fas fa-comment"> {{tweet.comment.length}}</i></button>&nbsp;
-        <button v-on:click="toggleTweetLike" class="btn btn-default btn-sm"><i class="fa fa-thumbs-up"> {{tweet.likes.length}}</i></button>
+        <button data-toggle="collapse" :data-parent="'#accordion'+tweet.id" :href="'#collapse'+tweet.id"  aria-expanded="false" type="button" class="btn btn-default btn-sm"><i class="fas fa-comment"> {{tweet.comment?tweet.comment.length || 0:0}}</i></button>&nbsp;
+        <button v-on:click="toggleTweetLike" class="btn btn-default btn-sm"><i class="fa fa-thumbs-up"> {{tweet.likes?tweet.likes.length || 0:0}}</i></button>
         <!-- {{tweet.likes.indexOf(this.user)}} -->
         <!-- <span class="float-right text-muted">{{tweet.likes.length}} likes- {{tweet.comment.length}} comments</span> -->
       </div>
@@ -59,7 +59,7 @@
       <div :id="'accordion'+tweet.id">
         <div :id="'collapse'+tweet.id" class="panel-collapse in collapse" style="">
           <div class="card-footer card-comments">
-            <Comments v-bind:comments="tweet.comment"/>
+            <Comments :tweet="tweet" v-bind:comments="tweet.comment"/>
             <div class="card-footer">
               <form @submit.prevent="addComment">
                 <img class="img-fluid img-circle img-sm" src="@/assets/adminlte300-template/dist/img/user4-128x128.jpg" alt="Alt Text">
@@ -126,23 +126,18 @@ export default {
         commentText: this.commentText,
         user:null,
         tweet:{
-          id:this.$props.tweet.id
+          id:this.tweet.id
         }
       }
-      var data=[
-        newComment
-      ]
-      if(this.$route.path.startsWith('/feeds'))
-        data.push('getFeeds');
-      this.$store.dispatch('post_comment', data);
+      this.$store.dispatch('post_comment', [this.tweet, newComment]);
       this.commentText = '';
     },
     toggleTweetLike(){
       // console.log(this.tweet.id);
-      this.$store.dispatch("toggleTweetLike", this.tweet.id);
+      this.$store.dispatch("toggleTweetLike", this.tweet);
     },
     deleteTweet(){
-      this.$store.dispatch("deleteTweet", this.tweet.id)
+      this.$store.dispatch("deleteTweet", this.tweet)
     }
   }
 }

@@ -19,35 +19,35 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item has-treeview menu-open">
-            <router-link to="/login" class="nav-link active">
+            <router-link to="/login" :class="mypath.startsWith('/login')?'nav-link active':'nav-link'">
               <i class="nav-icon fas fa-sign-in-alt"></i>
               <p>Login</p>
             </router-link>
           </li>
 
           <li class="nav-item has-treeview menu-open">
-            <router-link to="/register" class="nav-link">
+            <router-link to="/register" :class="mypath.startsWith('/register')?'nav-link active':'nav-link'">
               <i class="nav-icon fas fa-user-plus"></i>
               <p>Register</p>
             </router-link>
           </li>
 
           <li class="nav-item has-treeview menu-open">
-            <router-link to="/feeds" class="nav-link">
+            <router-link to="/feeds" :class="mypath.startsWith('/feeds')?'nav-link active':'nav-link'">
               <i class="nav-icon fas fa-newspaper"></i>
               <p>Feeds</p>
             </router-link>
           </li>
 
           <li class="nav-item has-treeview menu-open">
-            <router-link :to="'/profile/'+user.username" class="nav-link">
+            <router-link :to="'/profile/'+user.username" :class="mypath.startsWith('/profile')?'nav-link active':'nav-link'">
               <i class="nav-icon fas fa-user-circle"></i>
               <p>Profile</p>
             </router-link>
           </li>
 
           <li class="nav-item has-treeview menu-open">
-            <router-link to="/users" class="nav-link">
+            <router-link to="/users" :class="mypath.startsWith('/users')?'nav-link active':'nav-link'">
               <i class="nav-icon fas fa-users"></i>
               <p>Users</p>
             </router-link>
@@ -68,7 +68,8 @@ export default {
     user(){
       return this.$store.getters.get_user
     }
-  }
+  },
+  props:["mypath"]
 }
 </script>
 

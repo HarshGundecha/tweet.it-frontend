@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper" id="app">
     <Navbar/>
-    <MainSidebar/>
+    <MainSidebar :mypath="this.$route.path" />
     <!-- <ContentWrapper/> -->
     <router-view/>
     <ControlSidebar/>
