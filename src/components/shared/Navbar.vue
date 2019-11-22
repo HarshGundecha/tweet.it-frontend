@@ -111,13 +111,13 @@
           <li class="user-header bg-primary">
             <img src="@/assets/adminlte300-template/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
 
-            <p>
+            <!-- <p>
               {{user.name || ''}}
               <small>Member since Nov. 2012</small>
-            </p>
+            </p> -->
           </li>
           <!-- Menu Body -->
-          <li class="user-body">
+          <!-- <li class="user-body">
             <div class="row">
               <div class="col-4 text-center">
                 <a href="#">Followers</a>
@@ -129,8 +129,7 @@
                 <a href="#">Friends</a>
               </div>
             </div>
-            <!-- /.row -->
-          </li>
+          </li> -->
           <!-- Menu Footer-->
           <li class="user-footer">
             <a href="#" class="btn btn-default btn-flat">Profile</a>

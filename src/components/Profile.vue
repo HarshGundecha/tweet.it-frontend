@@ -48,6 +48,9 @@
                 <span v-if="user.username!=otherUser.username">
                   <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
                 </span>
+                <span v-else>
+                  <a href="#" class="btn btn-primary btn-block"><b>UnFollow</b></a>
+                </span>
               </div>
               <!-- /.card-body -->
             </div>
