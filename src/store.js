@@ -23,7 +23,6 @@ export default new Vuex.Store({
 		auth_success(state, token, user){
 			state.status = 'success'
 			state.token = token
-			// state.user = user
 		},
 		auth_error(state){
 			state.status = 'error'
@@ -64,8 +63,7 @@ export default new Vuex.Store({
 		login({commit, getters}, user){
 			return new Promise((resolve, reject) => {
 				commit('auth_request')
-				// axios({url: 'https://tweeterbackend.herokuapp.com/users/login', data: user, method: 'POST' })
-				axios({url: 'http://localhost:8888/users/login', data: user, method: 'POST' })
+				axios({url: 'https://tweeterbackend.herokuapp.com/users/login', data: user, method: 'POST' })
 				.then(resp => {
 					const token = resp.data.token
 					const user = resp.data.user
@@ -74,7 +72,6 @@ export default new Vuex.Store({
 					axios.defaults.headers.common['Authorization'] = "Bearer "+token
 					commit('auth_success', token, user)
 					commit('setUser', user)
-					// console.log("user "+getters.get_user.username)
 					resolve(resp)
 				})
 				.catch(err => {
@@ -88,8 +85,7 @@ export default new Vuex.Store({
 		register({commit}, user){
 			return new Promise((resolve, reject) => {
 				commit('auth_request')
-				// axios({url: 'https://tweeterbackend.herokuapp.com/users/register', data: user, method: 'POST' })
-				axios({url: 'http://localhost:8888/users/register', data: user, method: 'POST' })
+				axios({url: 'https://tweeterbackend.herokuapp.com/users/register', data: user, method: 'POST' })
 				.then(resp => {
 					const token = resp.data.token
 					const user = resp.data.user
@@ -123,9 +119,7 @@ export default new Vuex.Store({
 		// Profile
 		getProfile({commit, getters}, username){
 			return new Promise((resolve, reject) => {
-				// commit('auth_request')
-				// axios({url: 'https://tweeterbackend.herokuapp.com/users/profile', method: 'GET'})
-				axios({url: 'http://localhost:8888/users/profile/'+username, method: 'GET'})
+				axios({url: 'https://tweeterbackend.herokuapp.com/users/profile/'+username, method: 'GET'})
 				.then(resp => {
 					const tweet = resp.data.tweet
 					const anyUser = resp.data.user
@@ -135,25 +129,20 @@ export default new Vuex.Store({
 				})
 				.catch(err => {
 					commit('auth_error')
-					// localStorage.removeItem('token')
 					reject(err)
 				})
 			})
 		},
 		getFeeds({commit, dispatch, getters}){
 			return new Promise((resolve, reject) => {
-				// commit('auth_request')
-				// axios({url: 'https://tweeterbackend.herokuapp.com/users', method: 'GET'})
-				axios({url: 'http://localhost:8888/tweets/feeds', method: 'GET'})
+				axios({url: 'https://tweeterbackend.herokuapp.com/tweets/feeds', method: 'GET'})
 				.then(resp => {
-					// console.log(resp);
 					const tweet = resp.data.tweet
 					commit('set_my_tweets', tweet)
 					resolve(resp)
 				})
 				.catch(err => {
 					commit('auth_error')
-					// localStorage.removeItem('token')
 					reject(err)
 				})
 			})
@@ -164,42 +153,33 @@ export default new Vuex.Store({
 		// User
 		putUser({commit, dispatch, getters}, updatedUser){
 			return new Promise((resolve, reject) => {
-				// commit('auth_request')
-				// axios({url: 'https://tweeterbackend.herokuapp.com/users', method: 'GET'})
-				axios({url: 'http://localhost:8888/users', data:updatedUser, method: 'PUT'})
+				axios({url: 'https://tweeterbackend.herokuapp.com/users', data:updatedUser, method: 'PUT'})
 				.then(resp => {
 					dispatch("getProfile", this.getters.getOtherUser.username);
 					resolve(resp)
 				})
 				.catch(err => {
 					commit('auth_error')
-					// localStorage.removeItem('token')
 					reject(err)
 				})
 			})
 		},
 		searchUser({commit}, searchText){
 			return new Promise((resolve, reject) => {
-				// commit('auth_request')
-				// axios({url: 'https://tweeterbackend.herokuapp.com/users', method: 'GET'})
-				axios({url: 'http://localhost:8888/users/search/'+searchText, method: 'GET'})
+				axios({url: 'https://tweeterbackend.herokuapp.com/users/search/'+searchText, method: 'GET'})
 				.then(resp => {
-					// console.log(resp);
 					commit('setSearchUsers', resp.data.searchUsers)
 					resolve(resp)
 				})
 				.catch(err => {
 					commit('auth_error')
-					// localStorage.removeItem('token')
 					reject(err)
 				})
 			})
 		},
 		getUsers({commit}){
 			return new Promise((resolve, reject) => {
-				// commit('auth_request')
-				// axios({url: 'https://tweeterbackend.herokuapp.com/users', method: 'GET'})
-				axios({url: 'http://localhost:8888/users', method: 'GET'})
+				axios({url: 'https://tweeterbackend.herokuapp.com/users', method: 'GET'})
 				.then(resp => {
 					const users = resp.data.users
 					commit('set_users', users)
@@ -207,13 +187,11 @@ export default new Vuex.Store({
 				})
 				.catch(err => {
 					commit('auth_error')
-					// localStorage.removeItem('token')
 					reject(err)
 				})
 			})
 		},
 		setSearchText({commit}, searchText){
-			// console.log("received search commit "+searchText);
 			commit('setSearchText', searchText)
 		},
 		// User //
@@ -234,7 +212,6 @@ export default new Vuex.Store({
 		},
 		putPostSomethingInTweet({commit, getters}, data){
 			return new Promise((resolve, reject) => {
-				// axios({url: 'https://tweeterbackend.herokuapp.com/comments', data: comment, method: 'POST' })
 				axios({url: data.link, data:data.data, method: data.method })
 				.then(resp => {
 					commit('updateTweets', {oldTweet:data.data, newTweet:resp.data})
@@ -250,13 +227,13 @@ export default new Vuex.Store({
 
 		// Tweet
 		addTweet({commit, dispatch}, newTweet){
-			dispatch('putPostSomethingInTweet', {link:'http://localhost:8888/tweets', method:'POST', data:newTweet})
+			dispatch('putPostSomethingInTweet', {link:'https://tweeterbackend.herokuapp.com/tweets', method:'POST', data:newTweet})
 		},
 		deleteTweet({commit, dispatch}, tweet){
-			dispatch('deleteSomethingInTweet', {link:'http://localhost:8888/tweets/'+tweet.id, data:tweet})
+			dispatch('deleteSomethingInTweet', {link:'https://tweeterbackend.herokuapp.com/tweets/'+tweet.id, data:tweet})
 		},
 		toggleTweetLike({commit, dispatch, getters}, tweet){
-			dispatch('putPostSomethingInTweet', {link:'http://localhost:8888/tweets/'+tweet.id+'/togglelike' , method:'PUT', data:tweet})
+			dispatch('putPostSomethingInTweet', {link:'https://tweeterbackend.herokuapp.com/tweets/'+tweet.id+'/togglelike' , method:'PUT', data:tweet})
 		},
 
 
@@ -276,7 +253,6 @@ export default new Vuex.Store({
 		},
 		putPostSomethingInComment({commit, getters}, data){
 			return new Promise((resolve, reject) => {
-				// axios({url: 'https://tweeterbackend.herokuapp.com/comments', data: comment, method: 'POST' })
 				axios({url: data.link, data:data.data, method: data.method })
 				.then(resp => {
 					commit('updateTweets', {oldTweet:data.tweet, newTweet:resp.data})
@@ -292,13 +268,13 @@ export default new Vuex.Store({
 
 		// Comment
 		post_comment({commit,dispatch, getters}, data){
-			dispatch('putPostSomethingInComment', {link:'http://localhost:8888/comments', method:'POST', data:data[1], tweet:data[0]})
+			dispatch('putPostSomethingInComment', {link:'https://tweeterbackend.herokuapp.com/comments', method:'POST', data:data[1], tweet:data[0]})
 		},
 		deleteComment({commit, dispatch, getters}, data){
-			dispatch('deleteSomethingInComment', {link:'http://localhost:8888/comments/'+data[1].id, data:data[1], tweet:data[0]})
+			dispatch('deleteSomethingInComment', {link:'https://tweeterbackend.herokuapp.com/comments/'+data[1].id, data:data[1], tweet:data[0]})
 		},
 		toggleCommentLike({commit, dispatch, getters}, data){
-			dispatch('putPostSomethingInComment', {link:'http://localhost:8888/comments/'+data[1].id+'/togglelike' , method:'PUT', data:data[1], tweet:data[0]})
+			dispatch('putPostSomethingInComment', {link:'https://tweeterbackend.herokuapp.com/comments/'+data[1].id+'/togglelike' , method:'PUT', data:data[1], tweet:data[0]})
 		},
 		// Comment //
 	},
