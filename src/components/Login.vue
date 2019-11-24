@@ -80,7 +80,7 @@ export default {
 			let email = this.email 
 			let password = this.password
 			this.$store.dispatch('login', { email, password })
-			.then(() => this.$router.push('/profile/'+this.$store.getters.get_user.username))
+			.then(() => this.$router.push('/profile/'+this.$store.getters.user.username))
 		}
   }
 }

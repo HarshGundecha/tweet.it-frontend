@@ -150,6 +150,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name:"Navbar",
   data(){
@@ -158,9 +159,9 @@ export default {
     }
   },
   computed:{
-    user(){
-      return this.$store.getters.get_user
-    }
+    ...mapGetters([
+      'user'
+    ]),
   },
   methods: {
     logout: function () {
@@ -170,8 +171,7 @@ export default {
       })
     },
     searchUser(){
-      this.$store.dispatch("setSearchText", this.searchText || ' ');
-      this.$router.push({name:'search', params:{searchText:this.searchText || ' '}})
+      this.$router.push({name:'search', params:{searchText:this.searchText || ' '}}).catch(err => {})
     },
     searchUserIfOnSearchRoute(){
       if(this.$route.path.startsWith('/search'))

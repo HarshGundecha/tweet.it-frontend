@@ -100,6 +100,8 @@
 <script>
 import Comments from './Comments';
 import Images from './Images';
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'Post',
   props:["tweet"],
@@ -113,12 +115,10 @@ export default {
     }
   },
   computed:{
-    user(){
-      return this.$store.getters.get_user;
-    },
-    otherUser(){
-      return this.$store.getters.getOtherUser;
-    },
+    ...mapGetters([
+      'otherUser',
+      'user'
+    ]),
 },
   methods: {
     addComment() {
@@ -129,7 +129,7 @@ export default {
           id:this.tweet.id
         }
       }
-      this.$store.dispatch('post_comment', [this.tweet, newComment]);
+      this.$store.dispatch('postComment', [this.tweet, newComment]);
       this.commentText = '';
     },
     toggleTweetLike(){

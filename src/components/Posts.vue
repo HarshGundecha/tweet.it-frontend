@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div v-bind:key="tweet.id" v-for="tweet in my_tweets">
+		<div v-bind:key="tweet.id" v-for="tweet in tweets">
 			<PostItem v-bind:tweet="tweet"/>
 		</div>
 	</div>
@@ -13,6 +13,6 @@ export default {
 		components:{
 			PostItem
 		},
-		props:["my_tweets"]
+		props:["tweets"]
 }
 </script>

@@ -47,13 +47,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
 	name:"CommentItem",
 	props:["comment", "tweet"],
 	computed:{
-		user(){
-			return this.$store.getters.get_user
-		}
+    ...mapGetters([
+      'user'
+    ]),
 	},
 	methods:{
 		toggleCommentLike(){

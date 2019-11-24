@@ -104,7 +104,7 @@
               <div class="card-header p-2">
                 <ul class="nav nav-pills">
                   <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Activity</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Timeline</a></li>
+                  <!-- <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Timeline</a></li> -->
                   <li v-if="user.username==otherUser.username" class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Settings</a></li>
                 </ul>
               </div><!-- /.card-header -->
@@ -114,14 +114,14 @@
                     <!-- Post -->
                     <div v-if="user.username==otherUser.username" class="col-md-12">
                       <div class="card card-widget">
-                        <form @submit.prevent="addTweet">
+                        <form @submit.prevent="postTweet(newTweet);">
                           <div class="card-header">
                             <h3 class="card-title">Post Tweet</h3>
                           </div>
                           <div class="card-body">
                             <div class="form-group">
                               <label>Text</label>
-                              <textarea v-model="tweetText" class="form-control" rows="3" placeholder="Enter ..."></textarea>
+                              <textarea v-model="newTweet.tweetText" class="form-control" rows="3" placeholder="Enter ..."></textarea>
                             </div>
                           </div>
                           <div class="card-footer">
@@ -132,7 +132,7 @@
                       </div>
                     </div>
 
-                    <Posts v-bind:my_tweets="my_tweets"/>
+                    <Posts v-bind:tweets="tweets"/>
                     <!-- /.post -->
                   </div>
                   <!-- /.tab-pane -->
@@ -147,7 +147,7 @@
                       </div>
                       <!-- /.timeline-label -->
                       <!-- timeline item -->
-                      <div>
+                      <!-- <div>
                         <i class="fas fa-envelope bg-primary"></i>
 
                         <div class="timeline-item">
@@ -166,7 +166,7 @@
                             <a href="#" class="btn btn-danger btn-sm">Delete</a>
                           </div>
                         </div>
-                      </div>
+                      </div> -->
                       <!-- END timeline item -->
                       <!-- timeline item -->
                       <div>
@@ -233,7 +233,7 @@
                   <!-- /.tab-pane -->
 
                   <div class="tab-pane" id="settings">
-                    <form @submit.prevent="putUser" class="form-horizontal">
+                    <form @submit.prevent="putUser(user)" class="form-horizontal">
                       <div class="form-group row">
                         <label for="inputName" class="col-sm-2 col-form-label">Name</label>
                         <div class="col-sm-10">
@@ -290,6 +290,8 @@
 
 <script>
 import Posts from '../components/Posts';
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
   name: 'Profile',
   components:{
@@ -298,28 +300,21 @@ export default {
   props:["username"],
   data() {
     return {
-      tweetText: '',
+      newTweet: {
+        tweetText: ''
+      },
     }
   },
   watch: {
-    '$route.path': function(){
-      // console.log(this.$route.params);
+    '$route.path'(){
       this.onCreated();
     }
   },
   methods:{
-    addTweet(){
-      const newTweet = {
-        tweetText:this.tweetText,
-        user:null,
-        comment:[]
-      }
-      this.tweetText=''
-      this.$store.dispatch('addTweet', newTweet);
-    },
-    putUser(){
-      this.$store.dispatch("putUser", this.user);
-    },
+    ...mapActions([
+      'postTweet',
+      'putUser'
+    ]),
     onCreated(){
       if(this.$route.path.startsWith('/feeds'))
         this.$store.dispatch('getFeeds')
@@ -328,15 +323,12 @@ export default {
     }
   },
   computed: {
-    user () {
-      return this.$store.getters.get_user
-    },
-    otherUser () {
-      return this.$store.getters.getOtherUser
-    },
-    my_tweets () {
-      return this.$store.getters.get_my_tweets
-    },
+    ...mapGetters([
+      'tweets',
+      'otherUser',
+      'user',
+      'toggleFollow'
+    ]),
   },
   created() {
     this.onCreated();

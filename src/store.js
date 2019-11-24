@@ -1,46 +1,47 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
-import router from './router'
 
 Vue.use(Vuex)
+
+var apiDomain = 'http://localhost:8888';
 
 export default new Vuex.Store({
   state: {
     status: '',
     token: localStorage.getItem('token') || '',
-		user : {},
+		user : localStorage.getItem('user') || {},
 		otherUser: {},
-		my_tweets:[],
+		myTweets:[],
 		users:[],
 		searchUsers:[],
 		searchText:''
   },
   mutations: {
-		auth_request(state){
+		authRequest(state){
 			state.status = 'loading'
 		},
-		auth_success(state, token, user){
+		authSuccess(state, token, user){
 			state.status = 'success'
 			state.token = token
 		},
-		auth_error(state){
+		authError(state){
 			state.status = 'error'
 		},
 		logout(state){
 			state.status = ''
 			state.token = ''
 		},
-		set_my_tweets(state, tweets){
-			state.my_tweets = tweets
+		setTweets(state, tweets){
+			state.myTweets = tweets
 		},
 		updateTweets(state, data){
 			var ii;
-			for(ii=0;state.my_tweets && ii<state.my_tweets.length && state.my_tweets[ii]!=data.oldTweet;ii++);
+			for(ii=0;state.myTweets && ii<state.myTweets.length && state.myTweets[ii]!=data.oldTweet;ii++);
 			if(data.newTweet===true)
-				Vue.delete(state.my_tweets, ii)
+				Vue.delete(state.myTweets, ii)
 			else
-				Vue.set(state.my_tweets, ii, data.newTweet)
+				Vue.set(state.myTweets, ii, data.newTweet)
 		},
 		setUser(state, user){
 			state.user = user
@@ -48,12 +49,12 @@ export default new Vuex.Store({
 		setOtherUser(state, user){
 			state.otherUser = user
 		},
-		set_users(state, users){
+		setUsers(state, users){
 			state.users = users
 		},
-		setSearchUsers(state, searchUsers){
-			state.searchUsers = searchUsers
-		},
+		// setSearchUsers(state, searchUsers){
+		// 	state.searchUsers = searchUsers
+		// },
 		setSearchText(state, searchText){
 			state.searchText = searchText
 		},		
@@ -62,20 +63,20 @@ export default new Vuex.Store({
 		// AUTH
 		login({commit, getters}, user){
 			return new Promise((resolve, reject) => {
-				commit('auth_request')
-				axios({url: 'https://tweeterbackend.herokuapp.com/users/login', data: user, method: 'POST' })
+				commit('authRequest')
+				axios({url: apiDomain+'/users/login', data: user, method: 'POST' })
 				.then(resp => {
 					const token = resp.data.token
 					const user = resp.data.user
 					localStorage.setItem('token', token)
 					localStorage.setItem('user', user)
 					axios.defaults.headers.common['Authorization'] = "Bearer "+token
-					commit('auth_success', token, user)
+					commit('authSuccess', token, user)
 					commit('setUser', user)
 					resolve(resp)
 				})
 				.catch(err => {
-					commit('auth_error')
+					commit('authError')
 					localStorage.removeItem('token')
 					localStorage.removeItem('user')
 					reject(err)
@@ -84,8 +85,8 @@ export default new Vuex.Store({
 		},
 		register({commit}, user){
 			return new Promise((resolve, reject) => {
-				commit('auth_request')
-				axios({url: 'https://tweeterbackend.herokuapp.com/users/register', data: user, method: 'POST' })
+				commit('authRequest')
+				axios({url: apiDomain+'/users/register', data: user, method: 'POST' })
 				.then(resp => {
 					const token = resp.data.token
 					const user = resp.data.user
@@ -93,11 +94,11 @@ export default new Vuex.Store({
 					localStorage.setItem('user', user)
 					axios.defaults.headers.common['Authorization'] = "Bearer "+token
 					commit('setUser', user)
-					commit('auth_success', token, user)
+					commit('authSuccess', token, user)
 					resolve(resp)
 				})
 				.catch(err => {
-					commit('auth_error', err)
+					commit('authError', err)
 					localStorage.removeItem('token')
 					localStorage.removeItem('user')
 					reject(err)
@@ -119,30 +120,30 @@ export default new Vuex.Store({
 		// Profile
 		getProfile({commit, getters}, username){
 			return new Promise((resolve, reject) => {
-				axios({url: 'https://tweeterbackend.herokuapp.com/users/profile/'+username, method: 'GET'})
+				axios({url: apiDomain+'/users/profile/'+username, method: 'GET'})
 				.then(resp => {
 					const tweet = resp.data.tweet
 					const anyUser = resp.data.user
 					commit('setOtherUser', anyUser)
-					commit('set_my_tweets', tweet)
+					commit('setTweets', tweet)
 					resolve(resp)
 				})
 				.catch(err => {
-					commit('auth_error')
+					commit('authError')
 					reject(err)
 				})
 			})
 		},
 		getFeeds({commit, dispatch, getters}){
 			return new Promise((resolve, reject) => {
-				axios({url: 'https://tweeterbackend.herokuapp.com/tweets/feeds', method: 'GET'})
+				axios({url: apiDomain+'/tweets/feeds', method: 'GET'})
 				.then(resp => {
 					const tweet = resp.data.tweet
-					commit('set_my_tweets', tweet)
+					commit('setTweets', tweet)
 					resolve(resp)
 				})
 				.catch(err => {
-					commit('auth_error')
+					commit('authError')
 					reject(err)
 				})
 			})
@@ -153,46 +154,47 @@ export default new Vuex.Store({
 		// User
 		putUser({commit, dispatch, getters}, updatedUser){
 			return new Promise((resolve, reject) => {
-				axios({url: 'https://tweeterbackend.herokuapp.com/users', data:updatedUser, method: 'PUT'})
+				axios({url: apiDomain+'/users', data:updatedUser, method: 'PUT'})
 				.then(resp => {
-					dispatch("getProfile", this.getters.getOtherUser.username);
+					dispatch("getProfile", this.getters.otherUser.username);
 					resolve(resp)
 				})
 				.catch(err => {
-					commit('auth_error')
+					commit('authError')
 					reject(err)
 				})
 			})
 		},
-		searchUser({commit}, searchText){
+		users({commit}, searchText=false){
 			return new Promise((resolve, reject) => {
-				axios({url: 'https://tweeterbackend.herokuapp.com/users/search/'+searchText, method: 'GET'})
-				.then(resp => {
-					commit('setSearchUsers', resp.data.searchUsers)
-					resolve(resp)
-				})
-				.catch(err => {
-					commit('auth_error')
-					reject(err)
-				})
-			})
-		},
-		getUsers({commit}){
-			return new Promise((resolve, reject) => {
-				axios({url: 'https://tweeterbackend.herokuapp.com/users', method: 'GET'})
+				var endPoint = !searchText || searchText==' '?'':'/search/'+searchText;
+				axios({url: apiDomain+'/users'+endPoint, method: 'GET'})
 				.then(resp => {
 					const users = resp.data.users
-					commit('set_users', users)
+					commit('setUsers', users)
 					resolve(resp)
 				})
 				.catch(err => {
-					commit('auth_error')
+					commit('authError')
 					reject(err)
 				})
 			})
 		},
 		setSearchText({commit}, searchText){
 			commit('setSearchText', searchText)
+		},
+		toggleFollow({commit}, userId){
+			return new Promise((resolve, reject) => {
+				axios({url: 'http://localhost:8888/togglefollow/'+userId, method: 'GET'})
+				.then(resp => {
+					commit('setOtherUser', resp.data)
+					resolve(resp)
+				})
+				.catch(err => {
+					commit('authError')
+					reject(err)
+				})
+			})
 		},
 		// User //
 
@@ -205,7 +207,7 @@ export default new Vuex.Store({
 					resolve(resp)
 				})
 				.catch(err => {
-					commit('auth_error')
+					commit('authError')
 					reject(err)
 				})
 			})
@@ -218,7 +220,7 @@ export default new Vuex.Store({
 					resolve(resp)
 				})
 				.catch(err => {
-					commit('auth_error', err)
+					commit('authError', err)
 					reject(err)
 				})
 			})
@@ -226,14 +228,14 @@ export default new Vuex.Store({
 		// Tweet common //
 
 		// Tweet
-		addTweet({commit, dispatch}, newTweet){
-			dispatch('putPostSomethingInTweet', {link:'https://tweeterbackend.herokuapp.com/tweets', method:'POST', data:newTweet})
+		postTweet({commit, dispatch}, newTweet){
+			dispatch('putPostSomethingInTweet', {link:apiDomain+'/tweets', method:'POST', data:newTweet})
 		},
 		deleteTweet({commit, dispatch}, tweet){
-			dispatch('deleteSomethingInTweet', {link:'https://tweeterbackend.herokuapp.com/tweets/'+tweet.id, data:tweet})
+			dispatch('deleteSomethingInTweet', {link:apiDomain+'/tweets/'+tweet.id, data:tweet})
 		},
 		toggleTweetLike({commit, dispatch, getters}, tweet){
-			dispatch('putPostSomethingInTweet', {link:'https://tweeterbackend.herokuapp.com/tweets/'+tweet.id+'/togglelike' , method:'PUT', data:tweet})
+			dispatch('putPostSomethingInTweet', {link:apiDomain+'/tweets/'+tweet.id+'/togglelike' , method:'PUT', data:tweet})
 		},
 
 
@@ -246,7 +248,7 @@ export default new Vuex.Store({
 					resolve(resp)
 				})
 				.catch(err => {
-					commit('auth_error')
+					commit('authError')
 					reject(err)
 				})
 			})
@@ -259,7 +261,7 @@ export default new Vuex.Store({
 					resolve(resp)
 				})
 				.catch(err => {
-					commit('auth_error', err)
+					commit('authError', err)
 					reject(err)
 				})
 			})
@@ -267,14 +269,14 @@ export default new Vuex.Store({
 		// Comment common //
 
 		// Comment
-		post_comment({commit,dispatch, getters}, data){
-			dispatch('putPostSomethingInComment', {link:'https://tweeterbackend.herokuapp.com/comments', method:'POST', data:data[1], tweet:data[0]})
+		postComment({commit,dispatch, getters}, data){
+			dispatch('putPostSomethingInComment', {link:apiDomain+'/comments', method:'POST', data:data[1], tweet:data[0]})
 		},
 		deleteComment({commit, dispatch, getters}, data){
-			dispatch('deleteSomethingInComment', {link:'https://tweeterbackend.herokuapp.com/comments/'+data[1].id, data:data[1], tweet:data[0]})
+			dispatch('deleteSomethingInComment', {link:apiDomain+'/comments/'+data[1].id, data:data[1], tweet:data[0]})
 		},
 		toggleCommentLike({commit, dispatch, getters}, data){
-			dispatch('putPostSomethingInComment', {link:'https://tweeterbackend.herokuapp.com/comments/'+data[1].id+'/togglelike' , method:'PUT', data:data[1], tweet:data[0]})
+			dispatch('putPostSomethingInComment', {link:apiDomain+'/comments/'+data[1].id+'/togglelike' , method:'PUT', data:data[1], tweet:data[0]})
 		},
 		// Comment //
 	},
@@ -282,11 +284,10 @@ export default new Vuex.Store({
 	getters : {
 		isLoggedIn: state => !!state.token,
 		authStatus: state => state.status,
-		get_user:state=>state.user,
-		getOtherUser:state=>state.otherUser,
-		getUsers:state=>state.users,
-		get_my_tweets:state=>state.my_tweets,
-		getSearchUsers:state=>state.searchUsers,
-		getSearchText:state=>state.searchText,
+		user:state=>state.user,
+		users:state=>state.users,
+		otherUser:state=>state.otherUser,
+		tweets:state=>state.myTweets,
+		searchText:state=>state.searchText,
 	}
 })

@@ -55,19 +55,35 @@
 
 <script>
 import UserItem from './UserItem';
+import { mapGetters } from 'vuex';
+
 export default {
 	name:"Users",
 	components:{
 		UserItem
 	},
 	computed:{
-		users(){
-			return this.$store.getters.getUsers
-		}
-	},
-	created() {
-    this.$store.dispatch('getUsers')
-  }
+    ...mapGetters([
+      'users'
+    ]),
+  },
+	props:["searchText"],
+  watch: {
+    '$route.params.searchText'(id) {
+      this.getSearchResult()
+    }
+  },
+  created: function () {
+    this.getSearchResult()
+  },
+  methods: {
+    getSearchResult() {
+      this.$store.dispatch('users', this.searchText || '')
+    }
+  },
+	// created() {
+  //   this.$store.dispatch('users')
+  // }
 }
 </script>
 

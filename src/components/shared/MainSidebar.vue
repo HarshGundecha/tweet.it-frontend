@@ -62,12 +62,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name:"MainSidebar",
   computed:{
-    user(){
-      return this.$store.getters.get_user
-    }
+    ...mapGetters([
+      'user'
+    ]),
   },
   props:["mypath"]
 }

@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Login from './components/Login';
 import Register from './components/Register';
 import Users from './components/Users';
-import Search from './components/Search';
 import ContentWrapper from './components/shared/ContentWrapper';
 import Profile from './components/Profile';
 import Router from 'vue-router'
@@ -48,7 +47,7 @@ let router = new Router({
 		},
     { 
       path: '/search/:searchText?', 
-      component: Search, 
+      component: Users, 
       name:'search',
       meta: { 
         requiresAuth: true
