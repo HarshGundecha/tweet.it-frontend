@@ -69,7 +69,7 @@ export default {
   },
 	props:["searchText"],
   watch: {
-    '$route.params.searchText'(id) {
+    '$route.params.searchText':function() {
       this.getSearchResult()
     }
   },

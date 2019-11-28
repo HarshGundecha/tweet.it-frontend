@@ -171,7 +171,7 @@ export default {
       })
     },
     searchUser(){
-      this.$router.push({name:'search', params:{searchText:this.searchText || ' '}}).catch(err => {})
+      this.$router.push({name:'search', params:{searchText:this.searchText || ' '}}).catch(() => {})
     },
     searchUserIfOnSearchRoute(){
       if(this.$route.path.startsWith('/search'))
