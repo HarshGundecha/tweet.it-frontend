@@ -63,7 +63,12 @@
 										</div>
 										<!-- /.col -->
 										<div class="col-6">
-											<button type="submit" class="btn btn-success btn-block">Register</button>
+											<button type="submit" class="btn btn-success btn-block" :disabled="isRegistrationBusy">
+												<span v-if="isRegistrationBusy">
+													<span class="spinner-border spinner-border-sm"></span>&nbsp;loading...
+												</span>
+												<span v-else>Register</span>
+											</button>
 										</div>
 										<!-- /.col -->
 									</div>
@@ -81,6 +86,7 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
 export default {
 	name : 'Register',
 	data(){
@@ -90,6 +96,11 @@ export default {
 			email : "",
 			password : "",
 		}
+	},
+	computed:{
+		...mapGetters([
+			'isRegistrationBusy'
+		])
 	},
 	methods: {
 		register: function () {

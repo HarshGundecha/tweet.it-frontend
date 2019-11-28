@@ -15,13 +15,16 @@ export default new Vuex.Store({
 		myTweets:[],
 		users:[],
 		searchUsers:[],
-		searchText:''
+		searchText:'',
+		isRegistrationBusy:false,
+		isLoginBusy:false,
+		isPostTweetBusy:false,
   },
   mutations: {
 		authRequest(state){
 			state.status = 'loading'
 		},
-		authSuccess(state, token, user){
+		authSuccess(state, token){
 			state.status = 'success'
 			state.token = token
 		},
@@ -57,13 +60,23 @@ export default new Vuex.Store({
 		// },
 		setSearchText(state, searchText){
 			state.searchText = searchText
-		},		
-  },
+		},
+		toggleIsRegistrationBusy(state, newFlag){
+			state.isRegistrationBusy = newFlag
+		},
+		toggleIsLoginBusy(state, newFlag){
+			state.isLoginBusy = newFlag
+		},
+		toggleIsPostTweetBusy(state, newFlag){
+			state.isPostTweetBusy = newFlag
+		},
+	},
   actions: {
 		// AUTH
-		login({commit, getters}, user){
+		login({commit}, user){
 			return new Promise((resolve, reject) => {
 				commit('authRequest')
+				commit('toggleIsLoginBusy', true)
 				axios({url: apiDomain+'/users/login', data: user, method: 'POST' })
 				.then(resp => {
 					const token = resp.data.token
@@ -81,11 +94,15 @@ export default new Vuex.Store({
 					localStorage.removeItem('user')
 					reject(err)
 				})
+				.finally(()=>{
+					commit('toggleIsLoginBusy', false)
+				})
 			})
 		},
 		register({commit}, user){
 			return new Promise((resolve, reject) => {
 				commit('authRequest')
+				commit('toggleIsRegistrationBusy', true)
 				axios({url: apiDomain+'/users/register', data: user, method: 'POST' })
 				.then(resp => {
 					const token = resp.data.token
@@ -103,6 +120,9 @@ export default new Vuex.Store({
 					localStorage.removeItem('user')
 					reject(err)
 				})
+				.finally(()=>{
+					commit('toggleIsRegistrationBusy', false)
+				})
 			})
 		},
 		logout({commit}){
@@ -118,7 +138,7 @@ export default new Vuex.Store({
 
 
 		// Profile
-		getProfile({commit, getters}, username){
+		getProfile({commit}, username){
 			return new Promise((resolve, reject) => {
 				axios({url: apiDomain+'/users/profile/'+username, method: 'GET'})
 				.then(resp => {
@@ -134,7 +154,7 @@ export default new Vuex.Store({
 				})
 			})
 		},
-		getFeeds({commit, dispatch, getters}){
+		getFeeds({commit}){
 			return new Promise((resolve, reject) => {
 				axios({url: apiDomain+'/tweets/feeds', method: 'GET'})
 				.then(resp => {
@@ -152,7 +172,7 @@ export default new Vuex.Store({
 
 
 		// User
-		putUser({commit, dispatch, getters}, updatedUser){
+		putUser({commit, dispatch}, updatedUser){
 			return new Promise((resolve, reject) => {
 				axios({url: apiDomain+'/users', data:updatedUser, method: 'PUT'})
 				.then(resp => {
@@ -199,7 +219,7 @@ export default new Vuex.Store({
 		// User //
 
 		// Tweet common
-		deleteSomethingInTweet({commit, getters}, data){
+		deleteSomethingInTweet({commit}, data){
 			return new Promise((resolve, reject) => {
 				axios({url: data.link, method: 'DELETE'})
 				.then(resp => {
@@ -212,8 +232,9 @@ export default new Vuex.Store({
 				})
 			})
 		},
-		putPostSomethingInTweet({commit, getters}, data){
+		putPostSomethingInTweet({commit}, data){
 			return new Promise((resolve, reject) => {
+				commit(data.toggle, true)
 				axios({url: data.link, data:data.data, method: data.method })
 				.then(resp => {
 					commit('updateTweets', {oldTweet:data.data, newTweet:resp.data})
@@ -223,24 +244,27 @@ export default new Vuex.Store({
 					commit('authError', err)
 					reject(err)
 				})
+				.finally(()=>{
+					commit(data.toggle, false)
+				})
 			})
 		},
 		// Tweet common //
 
 		// Tweet
-		postTweet({commit, dispatch}, newTweet){
-			dispatch('putPostSomethingInTweet', {link:apiDomain+'/tweets', method:'POST', data:newTweet})
+		postTweet({dispatch}, newTweet){
+			dispatch('putPostSomethingInTweet', {link:apiDomain+'/tweets', method:'POST', data:newTweet, toggle:'toggleIsPostTweetBusy'})
 		},
-		deleteTweet({commit, dispatch}, tweet){
+		deleteTweet({dispatch}, tweet){
 			dispatch('deleteSomethingInTweet', {link:apiDomain+'/tweets/'+tweet.id, data:tweet})
 		},
-		toggleTweetLike({commit, dispatch, getters}, tweet){
+		toggleTweetLike({dispatch}, tweet){
 			dispatch('putPostSomethingInTweet', {link:apiDomain+'/tweets/'+tweet.id+'/togglelike' , method:'PUT', data:tweet})
 		},
 
 
 		// Comment common
-		deleteSomethingInComment({commit, getters}, data){
+		deleteSomethingInComment({commit}, data){
 			return new Promise((resolve, reject) => {
 				axios({url: data.link, method: 'DELETE'})
 				.then(resp => {
@@ -253,7 +277,7 @@ export default new Vuex.Store({
 				})
 			})
 		},
-		putPostSomethingInComment({commit, getters}, data){
+		putPostSomethingInComment({commit}, data){
 			return new Promise((resolve, reject) => {
 				axios({url: data.link, data:data.data, method: data.method })
 				.then(resp => {
@@ -269,13 +293,13 @@ export default new Vuex.Store({
 		// Comment common //
 
 		// Comment
-		postComment({commit,dispatch, getters}, data){
+		postComment({dispatch}, data){
 			dispatch('putPostSomethingInComment', {link:apiDomain+'/comments', method:'POST', data:data[1], tweet:data[0]})
 		},
-		deleteComment({commit, dispatch, getters}, data){
+		deleteComment({ dispatch}, data){
 			dispatch('deleteSomethingInComment', {link:apiDomain+'/comments/'+data[1].id, data:data[1], tweet:data[0]})
 		},
-		toggleCommentLike({commit, dispatch, getters}, data){
+		toggleCommentLike({ dispatch}, data){
 			dispatch('putPostSomethingInComment', {link:apiDomain+'/comments/'+data[1].id+'/togglelike' , method:'PUT', data:data[1], tweet:data[0]})
 		},
 		// Comment //
@@ -289,5 +313,8 @@ export default new Vuex.Store({
 		otherUser:state=>state.otherUser,
 		tweets:state=>state.myTweets,
 		searchText:state=>state.searchText,
+		isRegistrationBusy:state=>state.isRegistrationBusy,
+		isLoginBusy:state=>state.isLoginBusy,
+		isPostTweetBusy:state=>state.isPostTweetBusy,
 	}
 })

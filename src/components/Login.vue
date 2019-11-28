@@ -48,7 +48,12 @@
 										</div>
 										<!-- /.col -->
 										<div class="col-6">
-											<button type="submit" class="btn btn-success btn-block">Sign In</button>
+											<button type="submit" class="btn btn-success btn-block" :disabled="isLoginBusy">
+												<span v-if="isLoginBusy">
+													<span class="spinner-border spinner-border-sm"></span>&nbsp;loading...
+												</span>
+												<span v-else>Login</span>
+											</button>
 										</div>
 										<!-- /.col -->
 									</div>
@@ -67,6 +72,7 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
 export default {
 	name : 'Login',
 	data(){
@@ -74,6 +80,11 @@ export default {
 			email : "",
 			password : ""
 		}
+	},
+	computed:{
+		...mapGetters([
+			'isLoginBusy'
+		])
 	},
 	methods: {
 		login: function (){

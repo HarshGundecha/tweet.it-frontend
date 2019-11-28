@@ -121,12 +121,19 @@
                           <div class="card-body">
                             <div class="form-group">
                               <label>Text</label>
-                              <textarea v-model="newTweet.tweetText" class="form-control" rows="3" placeholder="Enter ..."></textarea>
+                              <textarea v-model="newTweet.tweetText" class="form-control" rows="3" placeholder="Your thoughts 🤔️ here..." autofocus></textarea>
                             </div>
                           </div>
                           <div class="card-footer">
-                            <button type="submit" class="btn btn-success btn-lg float-md-right"><i class="fa fa-feather-alt"></i> Tweet</button>
-                            <button type="reset" class="btn btn-danger btn-lg">Reset</button>
+                            <button type="submit" class="btn btn-success btn-lg" :disabled="isPostTweetBusy">
+                              <span v-if="isPostTweetBusy">
+                                <span class="spinner-border spinner-border"></span>&nbsp;loading...
+                              </span>
+                              <span v-else>
+                                <i class='fa fa-feather'></i>&nbsp;Tweet
+                              </span>
+                            </button>
+                            <button type="reset" class="btn btn-danger btn-lg float-md-right">Reset</button>
                           </div>                          
                         </form>
                       </div>
@@ -327,7 +334,8 @@ export default {
       'tweets',
       'otherUser',
       'user',
-      'toggleFollow'
+      'toggleFollow',
+      'isPostTweetBusy'
     ]),
   },
   created() {
