@@ -53,9 +53,9 @@
 <script>
 export default {
   name:"ContentWrapper",
-  mounted(){
-    console.log("env is "+process.env.ROOT_API);
-  }
+  // mounted(){
+  //   console.log("env is "+process.env.ROOT_API);
+  // }
 }
 </script>
 
