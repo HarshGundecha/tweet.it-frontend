@@ -4,7 +4,12 @@ import axios from 'axios'
 
 Vue.use(Vuex)
 
+/*
 var apiDomain = 'http://localhost:8888';
+/*/
+var apiDomain = 'https://tweeterbackend.herokuapp.com';
+/*/
+
 
 export default new Vuex.Store({
   state: {
@@ -45,6 +50,7 @@ export default new Vuex.Store({
 				Vue.delete(state.myTweets, ii)
 			else
 				Vue.set(state.myTweets, ii, data.newTweet)
+				// state.myTweets.splice(ii, 1, data.newTweet)
 		},
 		setUser(state, user){
 			state.user = user
@@ -234,7 +240,8 @@ export default new Vuex.Store({
 		},
 		putPostSomethingInTweet({commit}, data){
 			return new Promise((resolve, reject) => {
-				commit(data.toggle, true)
+				if(data.toggle)
+					commit(data.toggle, true)
 				axios({url: data.link, data:data.data, method: data.method })
 				.then(resp => {
 					commit('updateTweets', {oldTweet:data.data, newTweet:resp.data})
@@ -245,7 +252,8 @@ export default new Vuex.Store({
 					reject(err)
 				})
 				.finally(()=>{
-					commit(data.toggle, false)
+					if(data.toggle)
+						commit(data.toggle, false)
 				})
 			})
 		},
@@ -261,6 +269,7 @@ export default new Vuex.Store({
 		toggleTweetLike({dispatch}, tweet){
 			dispatch('putPostSomethingInTweet', {link:apiDomain+'/tweets/'+tweet.id+'/togglelike' , method:'PUT', data:tweet})
 		},
+		// Tweet //
 
 
 		// Comment common
