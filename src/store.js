@@ -8,7 +8,7 @@ Vue.use(Vuex)
 var apiDomain = 'http://localhost:8888';
 /*/
 var apiDomain = 'https://tweeterbackend.herokuapp.com';
-/*/
+//*/
 
 
 export default new Vuex.Store({
