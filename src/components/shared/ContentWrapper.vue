@@ -53,9 +53,13 @@
 <script>
 export default {
   name:"ContentWrapper",
-  // mounted(){
-  //   console.log("env is "+process.env.ROOT_API);
-  // }
+  mounted(){
+    /* eslint-disable no-console */
+    // console.log("env is "+process.env);
+    console.log("env is "+process.env.VUE_APP_ROOT_API);
+    // console.log("env is "+process.env.ROOT_API);
+    /* eslint-enable no-console */
+  }
 }
 </script>
 

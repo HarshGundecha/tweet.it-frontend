@@ -4,12 +4,7 @@ import axios from 'axios'
 
 Vue.use(Vuex)
 
-/*
-var apiDomain = 'http://localhost:8888';
-/*/
-var apiDomain = 'https://tweeterbackend.herokuapp.com';
-//*/
-
+const apiDomain = process.env.VUE_APP_ROOT_API;
 
 export default new Vuex.Store({
   state: {

@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper" id="app">
     <Navbar/>
+    <!-- <MainSidebar v-if="isLoggedIn"  :mypath="this.$route.path" /> -->
     <MainSidebar :mypath="this.$route.path" />
     <!-- <ContentWrapper/> -->
     <router-view/>
@@ -10,6 +11,9 @@
 </template>
 
 <script>
+
+import { mapGetters } from 'vuex';
+
 // import '@/assets/dist/js/demo.js';
 import Navbar from './components/shared/Navbar';
 import MainSidebar from './components/shared/MainSidebar';
@@ -28,9 +32,12 @@ export default {
     ControlSidebar,
     Footer,
   },
-  // computed : {
-  //   isLoggedIn : function(){ return this.$store.getters.isLoggedIn}
-  // },
+  computed:{
+    ...mapGetters([
+      // 'user',
+      'isLoggedIn'
+    ]),
+  },
   // methods: {
   //   logout: function () {
   //     this.$store.dispatch('logout')

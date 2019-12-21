@@ -18,39 +18,46 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <li class="nav-item has-treeview menu-open">
+          <li v-if="!isLoggedIn" class="nav-item has-treeview menu-open">
             <router-link to="/login" :class="mypath.startsWith('/login')?'nav-link active':'nav-link'">
               <i class="nav-icon fas fa-sign-in-alt"></i>
               <p>Login</p>
             </router-link>
           </li>
 
-          <li class="nav-item has-treeview menu-open">
+          <li v-if="!isLoggedIn" class="nav-item has-treeview menu-open">
             <router-link to="/register" :class="mypath.startsWith('/register')?'nav-link active':'nav-link'">
               <i class="nav-icon fas fa-user-plus"></i>
               <p>Register</p>
             </router-link>
           </li>
 
-          <li class="nav-item has-treeview menu-open">
+          <li v-if="isLoggedIn" class="nav-item has-treeview menu-open">
             <router-link to="/feeds" :class="mypath.startsWith('/feeds')?'nav-link active':'nav-link'">
               <i class="nav-icon fas fa-newspaper"></i>
               <p>Feeds</p>
             </router-link>
           </li>
 
-          <li class="nav-item has-treeview menu-open">
+          <li v-if="isLoggedIn" class="nav-item has-treeview menu-open">
             <router-link :to="'/profile/'+user.username" :class="mypath.startsWith('/profile')?'nav-link active':'nav-link'">
               <i class="nav-icon fas fa-user-circle"></i>
               <p>Profile</p>
             </router-link>
           </li>
 
-          <li class="nav-item has-treeview menu-open">
+          <li v-if="isLoggedIn" class="nav-item has-treeview menu-open">
             <router-link to="/users" :class="mypath.startsWith('/users')?'nav-link active':'nav-link'">
               <i class="nav-icon fas fa-users"></i>
               <p>Users</p>
             </router-link>
+          </li>
+
+          <li v-if="isLoggedIn" class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link" @click="logout" >
+              <i class="nav-icon fas fa-power-off"></i>
+              <p>Logout</p>
+            </a>
           </li>
 
         </ul>
@@ -67,10 +74,19 @@ export default {
   name:"MainSidebar",
   computed:{
     ...mapGetters([
-      'user'
+      'user',
+      'isLoggedIn'
     ]),
   },
-  props:["mypath"]
+  props:["mypath"],
+  methods:{
+    logout: function () {
+      this.$store.dispatch('logout')
+      .then(() => {
+        this.$router.push('/login')
+      })
+    },
+  }
 }
 </script>
 
